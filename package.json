@@ -1,11 +1,11 @@
 {
-  "name": "userscript-foo",
+  "name": "deepseek-helper-userscript",
   "version": "0.0.1",
   "description": "this is userscript's description",
   "main": "index.js",
-  "repository": "https://github.com/JSREI/userscript-template.git",
-  "namespace": "https://github.com/JSREI/userscript-template.git",
-  "document": "https://github.com/JSREI/userscript-template.git",
+  "repository": "https://github.com/llm-sec/deepseek-helper-userscript",
+  "namespace": "https://github.com/llm-sec/deepseek-helper-userscript",
+  "document": "https://github.com/llm-sec/deepseek-helper-userscript",
   "scripts": {
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --watch --config webpack.dev.js"
