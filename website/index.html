@@ -40,7 +40,7 @@
             text-align: center;
             background: linear-gradient(rgba(13, 27, 42, 0.98), rgba(13, 27, 42, 0.92));
             clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
 
         .github-badges {
@@ -69,7 +69,7 @@
         .badge:hover {
             background: rgba(136, 192, 208, 0.2);
             transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .container {
@@ -120,7 +120,7 @@
 
         .feature-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
         }
 
         .feature-card::before {
@@ -184,7 +184,7 @@
             justify-content: center;
             font-weight: 600;
             font-size: 1.2rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         /* 增强型按钮 */
@@ -214,7 +214,7 @@
             background: linear-gradient(
                     90deg,
                     transparent,
-                    rgba(255,255,255,0.2),
+                    rgba(255, 255, 255, 0.2),
                     transparent
             );
             transition: left 0.6s;
@@ -235,7 +235,7 @@
             height: auto;
             border-radius: 20px;
             margin: 4rem 0;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s;
             border: 2px solid rgba(94, 129, 172, 0.3);
         }
@@ -278,7 +278,7 @@
         .qrcode {
             width: 200px;
             border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s;
         }
 
@@ -346,6 +346,109 @@
         footer a:hover {
             color: var(--accent);
         }
+
+        .comparison-section {
+            display: flex;
+            justify-content: center;
+            margin: 3rem 0;
+            width: 100%;
+        }
+
+        .comparison-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 1200px; /* 限制最大宽度 */
+        }
+
+        .image-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1; /* 让两张图片平分容器空间 */
+        }
+
+        .comparison-image {
+            width: 100%;
+            max-width: 500px; /* 限制最大宽度 */
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .comparison-image:hover {
+            transform: scale(1.05);
+        }
+
+        .arrow {
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--accent);
+            padding: 0 1rem;
+            flex-shrink: 0; /* 防止箭头被压缩 */
+        }
+
+        .arrow i {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 900px) {
+            .comparison-container {
+                padding: 0 1rem;
+            }
+
+            .comparison-image {
+                max-width: 40vw; /* 适配更小的屏幕，避免超出 */
+            }
+        }
+    </style>
+    <style>
+        /* 模态窗口背景 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        /* 关闭按钮 */
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 大图 */
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            margin: auto;
+            display: block;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+        }
+
+        /* 说明文字 */
+        #caption {
+            margin-top: 10px;
+            color: #ddd;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
@@ -389,9 +492,25 @@
         </div>
     </section>
 
-    <img src="images/retry-demo.png" alt="操作演示" class="demo-image" loading="lazy">
+    <section class="comparison-section">
+        <div class="comparison-container">
+            <div class="image-wrapper">
+                <img src="images/retry-demo-01.png" alt="使用前效果" class="comparison-image">
+                <p>使用前</p>
+            </div>
+            <div class="arrow">
+                <i class="fas fa-arrow-right"></i>
+                <p>使用 DeepSeek Helper 后的效果</p>
+            </div>
+            <div class="image-wrapper">
+                <img src="images/retry-demo-02.png" alt="使用后效果" class="comparison-image">
+                <p>使用后</p>
+            </div>
+        </div>
+    </section>
 
-    <h2 style="margin: 3rem 0; font-size: 2.2rem; border-left: 4px solid var(--accent); padding-left: 1.5rem;">核心能力</h2>
+    <h2 style="margin: 3rem 0; font-size: 2.2rem; border-left: 4px solid var(--accent); padding-left: 1.5rem;">
+        核心能力</h2>
     <div class="features-grid">
         <div class="feature-card">
             <i class="icon fas fa-robot"></i>
@@ -440,5 +559,43 @@
         <a href="https://github.com/llm-sec/deepseek-helper-userscript/issues">GitHub Issues</a>
     </p>
 </footer>
+
+<!-- 大图查看模态窗口 -->
+<div id="imageModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="fullImage">
+    <div id="caption"></div>
+</div>
+
+<script>
+    // 获取模态窗口和相关元素
+    const modal = document.getElementById("imageModal");
+    const modalImg = document.getElementById("fullImage");
+    const captionText = document.getElementById("caption");
+    const closeBtn = document.getElementsByClassName("close")[0];
+
+    // 绑定所有带 `comparison-image` 类的图片
+    document.querySelectorAll(".comparison-image").forEach(img => {
+        img.onclick = function (event) {
+            event.preventDefault(); // 阻止默认行为，防止误触链接
+            modal.style.display = "block";
+            modalImg.src = this.src;
+            captionText.innerHTML = this.alt;
+        };
+    });
+
+    // 关闭模态窗口
+    closeBtn.onclick = function () {
+        modal.style.display = "none";
+    };
+
+    // 点击背景关闭模态窗口
+    modal.onclick = function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    };
+</script>
+
 </body>
 </html>
