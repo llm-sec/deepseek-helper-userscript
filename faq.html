@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - 常见问题解答</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #0044cc;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1, h2 {
+            color: #0044cc;
+        }
+        .faq-item {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .faq-question {
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+        .faq-answer {
+            display: none;
+            color: #666;
+        }
+        .faq-question:hover {
+            color: #003366;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #0044cc;
+            color: #fff;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>常见问题解答 (FAQ)</h1>
+</header>
+<main>
+    <section>
+        <h2>关于我们的服务</h2>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">Q: 你们的服务有哪些类型？</div>
+            <div class="faq-answer">A: 我们提供多种服务，包括技术支持、咨询服务和培训课程。具体详情请访问我们的服务页面。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">Q: 如何联系你们的客服团队？</div>
+            <div class="faq-answer">A: 您可以通过我们的官方网站联系客服，或者拨打我们的24小时热线电话：123-456-7890。</div>
+        </div>
+    </section>
+    <section>
+        <h2>账户与安全</h2>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">Q: 如何重置我的密码？</div>
+            <div class="faq-answer">A: 您可以在登录页面点击“忘记密码”链接，然后按照提示操作即可。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">Q: 如何确保我的账户安全？</div>
+            <div class="faq-answer">A: 我们建议您使用强密码，并定期更新密码。同时，启用双重身份验证可以进一步提高安全性。</div>
+        </div>
+    </section>
+    <section>
+        <h2>其他问题</h2>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">Q: 你们的服务是否支持多语言？</div>
+            <div class="faq-answer">A: 是的，我们支持多种语言，包括中文、英文、日文等。</div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question" onclick="toggleAnswer(this)">Q: 如何获取最新的更新信息？</div>
+            <div class="faq-answer">A: 您可以订阅我们的邮件列表，或者关注我们的社交媒体账号。</div>
+        </div>
+    </section>
+</main>
+<footer>
+    <p>© 2025 FAQ 页面 | 如有其他问题，请联系我们。</p>
+</footer>
+
+<script>
+    function toggleAnswer(question) {
+        const answer = question.nextElementSibling;
+        if (answer.style.display === "block") {
+            answer.style.display = "none";
+        } else {
+            answer.style.display = "block";
+        }
+    }
+</script>
+</body>
+</html>
