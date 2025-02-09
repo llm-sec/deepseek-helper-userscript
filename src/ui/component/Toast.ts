@@ -14,7 +14,7 @@ export default class Toast {
             style.textContent = `
                 .custom-tip {
                     position: fixed;
-                    top: 20px;
+                    top: 100px;
                     left: 50%;
                     transform: translateX(-50%);
                     background: #4CAF50;

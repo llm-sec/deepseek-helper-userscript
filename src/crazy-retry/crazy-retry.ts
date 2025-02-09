@@ -58,7 +58,7 @@ export default async function runCrazyRetry() {
             resetBackoff();
 
         } catch (error) {
-            handleRetryError(error, lastContentHash);
+            await handleRetryError(error, lastContentHash);
             updateBackoff();
         }
     }
@@ -100,7 +100,7 @@ export default async function runCrazyRetry() {
 
     async function performRetry(element: any) {
         logger.info(`[重试 ${elementRetryMap.get(lastContentHash!) || 0 + 1}/${ELEMENT_RETRY_LIMIT}] 服务器繁忙`);
-        Toast.show("尝试自动刷新响应...", 3000);
+        Toast.show("检测到回答失败，尝试自动刷新响应...", 3000);
         element.clickRefreshBtn();
 
         const toastElement = await DeepSeekToastElement.captureDeepSeekToast(3000);
@@ -109,9 +109,9 @@ export default async function runCrazyRetry() {
         }
     }
 
-    function handleRetryError(error: any, hash: string | null) {
+    async function handleRetryError(error: any, hash: string | null) {
         if (error.message === "CLICK_TOO_FAST") {
-            handleTooFastError();
+            await handleTooFastError();
         } else {
             updateElementRetryCount(hash);
             logger.error(`重试异常: ${error.message}`);
@@ -126,11 +126,12 @@ export default async function runCrazyRetry() {
         }
     }
 
-    function handleTooFastError() {
+    async function handleTooFastError() {
         const waitMinutes = 30;
         logger.warn(`操作频率限制，等待${waitMinutes}分钟`);
-        Toast.show(`操作过快，请${waitMinutes}分钟后再试`, 5000);
-        sleep(1000 * 60 * waitMinutes).then(resetBackoff);
+        Toast.show(`操作过快，触发高等级封禁，功能临时不可用，${waitMinutes}分钟后再试`, 60 * 30 * 1000);
+        await sleep(1000 * 60 * 30);
+        resetBackoff();
     }
 
     function updateBackoff() {

@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>DeepSeek Helper - 智能自动重试解决方案</title>
+    <link rel="preload" href="https://fonts.googleapis.com" as="style">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0d1b2a;
+            --secondary: #5e81ac;
+            --accent: #88c0d0;
+            --surface: rgba(23, 42, 58, 0.95);
+            --gradient: linear-gradient(145deg, #0d1b2a 0%, #1b2b41 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            line-height: 1.7;
+            color: #e5e9f0;
+            background: var(--gradient);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* 增强型页头 */
+        .hero {
+            position: relative;
+            padding: 8rem 1rem 6rem;
+            text-align: center;
+            background: linear-gradient(rgba(13, 27, 42, 0.98), rgba(13, 27, 42, 0.92));
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .github-badges {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            z-index: 10;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(136, 192, 208, 0.1);
+            border: 2px solid rgba(136, 192, 208, 0.3);
+            border-radius: 8px;
+            color: var(--accent);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(4px);
+        }
+
+        .badge:hover {
+            background: rgba(136, 192, 208, 0.2);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* 动态标题效果 */
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            position: relative;
+            display: inline-block;
+            padding: 0 1rem;
+        }
+
+        h1::after {
+            content: "";
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.6;
+        }
+
+        /* 功能卡片布局优化 */
+        .features-grid {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(94, 129, 172, 0.3);
+            backdrop-filter: blur(8px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+        }
+
+        .feature-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(136, 192, 208, 0.1) 100%);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+
+        .feature-card:hover::before {
+            top: -20%;
+            left: -20%;
+        }
+
+        .icon {
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover .icon {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        /* 安装步骤设计 */
+        .install-steps {
+            display: grid;
+            gap: 2rem;
+            margin: 4rem 0;
+            counter-reset: step-counter;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        }
+
+        .step {
+            position: relative;
+            padding: 2.5rem 2rem;
+            background: var(--surface);
+            border-radius: 16px;
+            border: 1px solid rgba(94, 129, 208, 0.2);
+        }
+
+        .step::before {
+            counter-increment: step-counter;
+            content: counter(step-counter);
+            position: absolute;
+            top: -1.5rem;
+            left: -1.5rem;
+            width: 3rem;
+            height: 3rem;
+            background: var(--secondary);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* 增强型按钮 */
+        .store-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 2rem;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--accent) 100%);
+            color: var(--primary);
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: none;
+        }
+
+        .store-link::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255,255,255,0.2),
+                    transparent
+            );
+            transition: left 0.6s;
+        }
+
+        .store-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(94, 129, 172, 0.3);
+        }
+
+        .store-link:hover::after {
+            left: 100%;
+        }
+
+        /* 图片优化 */
+        .demo-image {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            margin: 4rem 0;
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+            border: 2px solid rgba(94, 129, 172, 0.3);
+        }
+
+        .demo-image:hover {
+            transform: scale(1.02);
+        }
+
+        /* 微信板块优化 */
+        .wechat-group {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 4rem 0;
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(94, 129, 172, 0.3);
+        }
+
+        .wechat-group::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 10px,
+                    rgba(136, 192, 208, 0.05) 10px,
+                    rgba(136, 192, 208, 0.05) 20px
+            );
+            pointer-events: none;
+        }
+
+        .qrcode {
+            width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .qrcode:hover {
+            transform: scale(1.05);
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 1rem 4rem;
+                clip-path: polygon(0 0, 100% 0, 100% 95%, 0 100%);
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .github-badges {
+                position: static;
+                justify-content: center;
+                margin-bottom: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .badge {
+                font-size: 0.9rem;
+                padding: 0.6rem 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .wechat-group {
+                flex-direction: column;
+                text-align: center;
+                padding: 2rem;
+            }
+
+            .step::before {
+                left: -1rem;
+            }
+        }
+
+        footer {
+            background: rgba(13, 27, 42, 0.98);
+            text-align: center;
+            padding: 3rem;
+            margin-top: 6rem;
+            border-top: 2px solid rgba(94, 129, 172, 0.3);
+        }
+
+        footer p {
+            margin: 1rem 0;
+            color: var(--accent);
+        }
+
+        footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+<header class="hero">
+    <div class="github-badges">
+        <a href="https://github.com/llm-sec/deepseek-helper-userscript" class="badge">
+            <i class="fab fa-github"></i>
+            <span>GitHub仓库</span>
+        </a>
+        <a href="https://www.tampermonkey.net/" class="badge">
+            <i class="fas fa-user-secret"></i>
+            <span>油猴商店</span>
+        </a>
+    </div>
+    <div class="container">
+        <h1><i class="fas fa-sync-alt"></i> DeepSeek Helper</h1>
+        <p style="color: var(--accent); font-size: 1.2rem; letter-spacing: 0.05em;">智能自动重试解决方案</p>
+    </div>
+</header>
+
+<main class="container">
+    <section class="install-steps">
+        <div class="step">
+            <h3>1. 安装油猴插件</h3>
+            <p>尚未安装的用户请先安装浏览器扩展</p>
+            <a target="_blank" href="https://chromewebstore.google.com/detail/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=zh-CN"
+               class="store-link">
+                <i class="fas fa-external-link-alt"></i>
+                前往Chrome商店
+            </a>
+        </div>
+
+        <div class="step">
+            <h3>2. 安装辅助脚本</h3>
+            <p>点击下方按钮自动安装最新版本</p>
+            <a target="_blank" href="https://github.com/llm-sec/deepseek-helper-userscript/raw/main/smart-retry.user.js"
+               class="store-link">
+                <i class="fas fa-download"></i>
+                一键安装脚本
+            </a>
+        </div>
+    </section>
+
+    <img src="images/retry-demo.png" alt="操作演示" class="demo-image" loading="lazy">
+
+    <h2 style="margin: 3rem 0; font-size: 2.2rem; border-left: 4px solid var(--accent); padding-left: 1.5rem;">核心能力</h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <i class="icon fas fa-robot"></i>
+            <h3>智能自动重试</h3>
+            <ul style="list-style: none; color: var(--accent);">
+                <li>► 全自动错误识别系统</li>
+                <li>► 支持GET/POST全方法覆盖</li>
+                <li>► 智能跳过无效重试场景</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <i class="icon fas fa-chart-line"></i>
+            <h3>动态退避策略</h3>
+            <ul style="list-style: none; color: var(--accent);">
+                <li>► 指数退避算法优化</li>
+                <li>► Jitter随机扰动因子</li>
+                <li>► 峰值间隔智能限流</li>
+            </ul>
+        </div>
+
+        <div class="feature-card">
+            <i class="icon fas fa-hard-hat"></i>
+            <h3>极端场景适配</h3>
+            <ul style="list-style: none; color: var(--accent);">
+                <li>► 网络闪断自动恢复</li>
+                <li>► 服务熔断快速降级</li>
+                <li>► 内存泄漏防御体系</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="wechat-group">
+        <img src="images/cc11001100-weixin.png" alt="技术交流群" class="qrcode" loading="lazy">
+        <div class="wechat-text">
+            <h3>加入AI社区</h3>
+            <p style="margin: 1rem 0; color: var(--accent);">扫码添加微信，备注"大模型"加入技术交流群</p>
+            <p style="color: var(--accent);">获取最新更新、技术文档和行业资讯</p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>© 2025 DeepSeek Helper | 智能重试解决方案</p>
+    <p>技术支持:
+        <a href="https://github.com/llm-sec/deepseek-helper-userscript/issues">GitHub Issues</a>
+    </p>
+</footer>
+</body>
+</html>

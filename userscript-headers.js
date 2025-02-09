@@ -5,6 +5,6 @@
 // @description  ${description}
 // @document     ${document}
 // @author       ${author}
-// @match        *://*/*
+// @match        https://chat.deepseek.com/*
 // @run-at       document-start
 // ==/UserScript==
