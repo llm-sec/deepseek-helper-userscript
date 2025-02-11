@@ -7,6 +7,7 @@
 
 import runCrazyRetry from "../crazy-retry/crazy-retry";
 import logger, {LogLevel} from "../logger/Logger";
+import FloatingBall from "../ui/component/FloatingBall";
 
 /**
  * 应用主初始化函数
@@ -29,6 +30,10 @@ export default async function init() {
         level: LogLevel.DEBUG,
         enableColors: false
     });
+
+    setTimeout(() => {
+        new FloatingBall();
+    }, 1000);
 
     // 初始化异常重试机制
     // 配置全局请求失败时的重试策略
