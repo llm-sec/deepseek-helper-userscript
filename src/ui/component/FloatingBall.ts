@@ -1,5 +1,8 @@
 // FloatingBall.ts
 import FloatingBallStyles from "./FloatingBallStyles";
+import {SettingsPopup} from "./SettingsPopup";
+import HelpPopup from "./HelpPopup";
+import AboutPopup from "./AboutPopup";
 
 /**
  * 浮动球主功能类
@@ -67,7 +70,7 @@ export default class FloatingBall {
         menu.className = 'floating-menu';
 
         // 菜单项配置
-        const menuItems = ['设置', '帮助', '关于'];
+        const menuItems = ['设置', '帮助', '关于', '分享'];
         this.items = menuItems.map(itemText => {
             const menuItem = document.createElement('li');
             menuItem.className = 'floating-menu-item';
@@ -142,11 +145,13 @@ export default class FloatingBall {
 
         // 根据内容类型生成不同弹窗
         if (content === '设置') {
-            this.createSettingsPopup(popup);
+            new SettingsPopup().show(popup);
         } else if (content === '帮助') {
-            this.createHelpPopup(popup);
+            new HelpPopup().show(popup);
         } else if (content === '关于') {
-            this.createAboutPopup(popup);
+            new AboutPopup().show(popup);
+        } else if (content == "分享") {
+            // TODO 2025-02-12 02:08:53
         }
 
         // 添加DOM元素
@@ -166,106 +171,4 @@ export default class FloatingBall {
         });
     }
 
-    /**
-     * 创建设置弹窗内容
-     */
-    private createSettingsPopup(popup: HTMLElement): void {
-        popup.innerHTML = `
-            <div class="popup-content">
-                <span class="popup-close">&times;</span>
-                <h3>重试算法设置</h3>
-                <div class="setting-section">
-                    <label>重试算法：</label>
-                    <div class="custom-select">
-                        <select id="retryAlgorithmSelect">
-                            <option value="exponential" selected>指数退避</option>
-                            <option value="fixed">固定时间</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="exponentialExplanation" class="explanation">
-                    指数退避算法会在每次失败后等待时间呈指数增长（例如1秒、2秒、4秒、8秒），有效缓解服务压力并提高重试成功率。
-                </div>
-                <div id="fixedTimeConfig" class="config-section" style="display: none;">
-                    <div class="time-config">
-                        <label>时间间隔：</label>
-                        <div style="display: flex; gap: 12px;">
-                            <input type="number" id="fixedTimeValue" class="time-input" value="1" min="1" />
-                            <div class="custom-select" style="flex:1">
-                                <select id="timeUnitSelect">
-                                    <option value="hours">小时</option>
-                                    <option value="minutes" selected>分钟</option>
-                                    <option value="seconds">秒</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-
-        // 绑定算法选择切换事件
-        const algorithmSelect = popup.querySelector('#retryAlgorithmSelect');
-        algorithmSelect?.addEventListener('change', (e) => {
-            const value = (e.target as HTMLSelectElement).value;
-            const exponentialExplanation = popup.querySelector('#exponentialExplanation') as HTMLElement;
-            const fixedTimeConfig = popup.querySelector('#fixedTimeConfig') as HTMLElement;
-            exponentialExplanation.style.display = value === 'fixed' ? 'none' : 'block';
-            fixedTimeConfig.style.display = value === 'fixed' ? 'block' : 'none';
-        });
-    }
-
-    /**
-     * 创建帮助弹窗内容
-     */
-    private createHelpPopup(popup: HTMLElement): void {
-        popup.innerHTML = `
-            <div class="popup-content">
-                <span class="popup-close">&times;</span>
-                <h3>帮助</h3>
-                <div style="text-align: center; margin-top: 30px;">
-                    <img src="https://cc11001100.github.io/images/wechat-qrcode.png" 
-                         alt="微信二维码" 
-                         style="width: 200px; height: 200px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <p style="margin-top: 20px; color: #666;">有问题请加作者微信反馈</p>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * 创建关于弹窗内容
-     */
-    private createAboutPopup(popup: HTMLElement): void {
-        popup.innerHTML = `
-            <div class="popup-content">
-                <span class="popup-close">&times;</span>
-                <h3>关于</h3>
-                <div style="margin: 30px 0; line-height: 1.6; color: #666;">
-                    <p>🗃️ GitHub仓库：<br>
-                        <a href="https://github.com/llm-sec/deepseek-helper-userscript" 
-                           target="_blank" 
-                           style="color: #007bff; text-decoration: none;">
-                           https://github.com/llm-sec/deepseek-helper-userscript
-                        </a>
-                    </p>
-                    <p>⭐️ Stars：<span id="github-stars">加载中...</span></p>
-                    <p>👨💻 作者：CC11001100</p>
-                </div>
-            </div>
-        `;
-
-        // 获取GitHub仓库星标数
-        fetch('https://api.github.com/repos/llm-sec/deepseek-helper-userscript')
-            .then(response => response.json())
-            .then(data => {
-                const stars = data.stargazers_count || '未知';
-                const starsElement = popup.querySelector('#github-stars');
-                if (starsElement) starsElement.textContent = stars.toString();
-            })
-            .catch(() => {
-                const starsElement = popup.querySelector('#github-stars');
-                if (starsElement) starsElement.textContent = '获取失败';
-            });
-    }
 }
