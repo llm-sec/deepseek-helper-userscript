@@ -450,6 +450,78 @@
             font-size: 18px;
         }
     </style>
+    <style>
+        /* 新增统计徽章样式 */
+        .badge-stats {
+            font-size: 0.85em;
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+
+        /* 社区板块响应式布局 */
+        .community-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .community-group {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            border: 2px solid rgba(94, 129, 172, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qq-join-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.5rem;
+            background: rgba(0, 153, 255, 0.1);
+            border-radius: 8px;
+            color: #09f;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .qq-join-link:hover {
+            background: rgba(0, 153, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* 移动端优化增强 */
+        @media (max-width: 768px) {
+            .github-badges {
+                position: static;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .badge {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .comparison-container {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+                padding: 1rem 0;
+            }
+        }
+    </style>
 </head>
 <body>
 <header class="hero">
@@ -457,10 +529,12 @@
         <a target="_blank" href="https://github.com/llm-sec/deepseek-helper-userscript" class="badge">
             <i class="fab fa-github"></i>
             <span>GitHub仓库</span>
+            <span class="badge-stats">★ -k</span>
         </a>
         <a target="_blank" href="https://greasyfork.org/zh-CN/scripts/526389" class="badge">
             <i class="fas fa-user-secret"></i>
             <span>油猴商店</span>
+            <span class="badge-stats">⬇ -k</span>
         </a>
     </div>
     <div class="container">
@@ -543,12 +617,30 @@
         </div>
     </div>
 
-    <div class="wechat-group">
-        <img src="images/cc11001100-weixin.png" alt="技术交流群" class="qrcode" loading="lazy">
-        <div class="wechat-text">
-            <h3>加入AI社区</h3>
-            <p style="margin: 1rem 0; color: var(--accent);">扫码添加微信，备注"大模型"加入技术交流群</p>
-            <p style="color: var(--accent);">获取最新更新、技术文档和行业资讯</p>
+    <h2 style="margin: 3rem 0; font-size: 2.2rem; border-left: 4px solid var(--accent); padding-left: 1.5rem;">
+        加入AI社区</h2>
+    <div class="community-section">
+        <div class="community-group">
+            <img src="images/cc11001100-weixin.png" alt="微信技术交流群" class="qrcode" loading="lazy">
+            <div style="text-align: center;">
+                <h3>微信技术交流群</h3>
+                <p style="margin: 1rem 0; color: var(--accent);">扫码添加好友备注"大模型"</p>
+            </div>
+        </div>
+
+        <div class="community-group">
+            <img src="images/qq-group-qrcode.jpg" alt="QQ技术交流群" class="qrcode" loading="lazy">
+            <div style="text-align: center;">
+                <h3>QQ技术交流群</h3>
+                <p style="margin: 1rem 0; color: var(--accent);">扫码加入或
+                    <a href="https://qm.qq.com/q/pYBa99j1e2"
+                       target="_blank"
+                       class="qq-join-link">
+                        <i class="fab fa-qq"></i>
+                        一键加群
+                    </a>
+                </p>
+            </div>
         </div>
     </div>
 </main>
@@ -596,6 +688,61 @@
         }
     };
 </script>
+<script>
+    // 动态获取统计数据
+    document.addEventListener('DOMContentLoaded', async () => {
+        const updateBadge = (element, defaultValue, value) => {
+            if (element) {
+                element.textContent = value;
+            } else {
+                console.error('Badge element not found, keeping default:', defaultValue);
+                if (element) element.textContent = defaultValue;
+            }
+        };
 
+        try {
+            // GitHub Star数
+            const githubBadge = document.querySelector('[href*="github.com"] .badge-stats');
+            if (githubBadge) {
+                const defaultValue = '★ 2.1k';
+                try {
+                    const repoRes = await fetch('https://api.github.com/repos/llm-sec/deepseek-helper-userscript', {
+                        headers: { 'Accept': 'application/vnd.github.v3+json' }
+                    });
+                    if (!repoRes.ok) throw new Error(`GitHub API Error: ${repoRes.status}`);
+                    const repoData = await repoRes.json();
+                    updateBadge(githubBadge, defaultValue, `★ ${repoData.stargazers_count.toLocaleString()}`);
+                } catch (error) {
+                    console.log('GitHub数据加载失败:', error);
+                    updateBadge(githubBadge, defaultValue, defaultValue);
+                }
+            }
+
+            // 油猴安装数
+            const greasyforkBadge = document.querySelector('[href*="greasyfork"] .badge-stats');
+            if (greasyforkBadge) {
+                const defaultValue = '⬇ 1.5k';
+                try {
+                    const proxyUrl = 'https://api.allorigins.win/get?url=';
+                    const scriptUrl = encodeURIComponent('https://greasyfork.org/scripts/526389.json');
+                    const res = await fetch(`${proxyUrl}${scriptUrl}`);
+                    if (!res.ok) throw new Error(`Proxy API Error: ${res.status}`);
+
+                    const data = await res.json();
+                    const scriptData = JSON.parse(data.contents);
+                    const installs = scriptData.total_installs || scriptData.daily_installs;
+
+                    if (!installs) throw new Error('Install count not found');
+                    updateBadge(greasyforkBadge, defaultValue, `⬇ ${installs.toLocaleString()}`);
+                } catch (error) {
+                    console.log('油猴数据加载失败:', error);
+                    updateBadge(greasyforkBadge, defaultValue, defaultValue);
+                }
+            }
+        } catch (error) {
+            console.log('全局捕获:', error);
+        }
+    });
+</script>
 </body>
 </html>
