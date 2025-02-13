@@ -544,6 +544,9 @@
 </header>
 
 <main class="container">
+
+    <h2 style="margin: 3rem 0; font-size: 2.2rem; border-left: 4px solid var(--accent); padding-left: 1.5rem;">
+        快速安装</h2>
     <section class="install-steps">
         <div class="step">
             <h3>1. 安装油猴浏览器扩展</h3>
@@ -566,6 +569,8 @@
         </div>
     </section>
 
+    <h2 style="margin: 3rem 0; font-size: 2.2rem; border-left: 4px solid var(--accent); padding-left: 1.5rem;">
+        使用效果</h2>
     <section class="comparison-section">
         <div class="comparison-container">
             <div class="image-wrapper">
@@ -704,7 +709,7 @@
             // GitHub Star数
             const githubBadge = document.querySelector('[href*="github.com"] .badge-stats');
             if (githubBadge) {
-                const defaultValue = '★ 2.1k';
+                const defaultValue = '★ -k';
                 try {
                     const repoRes = await fetch('https://api.github.com/repos/llm-sec/deepseek-helper-userscript', {
                         headers: { 'Accept': 'application/vnd.github.v3+json' }
@@ -721,7 +726,7 @@
             // 油猴安装数
             const greasyforkBadge = document.querySelector('[href*="greasyfork"] .badge-stats');
             if (greasyforkBadge) {
-                const defaultValue = '⬇ 1.5k';
+                const defaultValue = '⬇ -k';
                 try {
                     const proxyUrl = 'https://api.allorigins.win/get?url=';
                     const scriptUrl = encodeURIComponent('https://greasyfork.org/scripts/526389.json');
