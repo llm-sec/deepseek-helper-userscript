@@ -24,7 +24,10 @@ export default class AnswertElement {
     isServerBusy() {
         // 通过特定class选择器定位内容区域
         const content = this.answerElement.querySelector(".ds-markdown");
-        return content?.textContent?.trim() === "服务器繁忙，请稍后再试。";
+        const chineseBusy = "服务器繁忙，请稍后再试。";
+        const englishBusy = "The server is busy. Please try again later.";
+        const contentText = content?.textContent?.trim();
+        return contentText == chineseBusy || contentText == englishBusy;
     }
 
     /**
