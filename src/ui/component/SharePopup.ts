@@ -1,4 +1,7 @@
 import html2canvas from "html2canvas";
+import SessionElement from "../../selector/SessionElement";
+import AnswertElement from "../../selector/AnswertElement";
+import QueryElement from "../../selector/QueryElement";
 
 // 新增动画样式常量
 const BUTTON_STYLES = `
@@ -286,13 +289,22 @@ export default class SharePopup {
     // }
 
     private getChatRecords(): string[] {
-        // 示例数据（实际应从页面提取）
-        return [
-            this.createMessageBubble('right', 'user-avatar.jpg', '我', '你好！', '10:20'),
-            this.createMessageBubble('left', 'deepseek-avatar.png', 'DeepSeek', '你好！有什么可以帮助你的？', '10:21'),
-            this.createMessageBubble('right', 'user-avatar.jpg', '我', '请帮我美化这个聊天记录', '10:22'),
-            this.createMessageBubble('left', 'deepseek-avatar.png', 'DeepSeek', '已为您优化样式，现在看起来更专业了！🎉', '10:23')
-        ];
+
+        // TODO 2025-02-14 00:03:18 从页面中获取对话内容
+        const talkList = new SessionElement().selectAllTalkElement();
+
+        const talkForRender = [];
+        for (const talk of talkList) {
+            // 修改getChatRecords方法中的innerText为innerHTML
+            if (talk instanceof AnswertElement) {
+                const r = this.createMessageBubble('right', 'user-avatar.jpg', 'DeepSeek', talk.answerElement.innerHTML, '00:00');
+                talkForRender.push(r);
+            } else if (talk instanceof QueryElement) {
+                const r = this.createMessageBubble('left', 'user-avatar.jpg', '我', talk.queryElement.innerHTML, '00:00');
+                talkForRender.push(r);
+            }
+        }
+        return talkForRender;
     }
 
     private createMessageBubble(
@@ -303,103 +315,191 @@ export default class SharePopup {
         time: string
     ): string {
         return `
-            <div class="message-container ${align}" 
-                 style="display: flex; 
-                        flex-direction: ${align === 'right' ? 'row-reverse' : 'row'}; 
-                        gap: 12px; 
-                        margin: 16px 0;
-                        align-items: start;">
+    <div class="message-container ${align}" 
+         style="display: flex;
+                flex-direction: ${align === 'right' ? 'row-reverse' : 'row'};
+                gap: 20px;
+                margin: 24px 0;
+                align-items: flex-start;
+                width: 100%;
+                min-width: 0;
+                max-width: 100%;">
+        
+        <!-- 头像优化 -->
+        <img src="${avatar}" 
+             style="width: 56px;
+                    height: 56px;
+                    flex-shrink: 0;
+                    border: 2px solid ${align === 'right' ? '#6366f1' : '#e0e0e0'};
+                    border-radius: 50%;
+                    object-fit: cover;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+        
+        <!-- 消息内容容器 -->
+        <div style="max-width: calc(100% - 96px);
+                    min-width: 240px;
+                    flex-shrink: 0;
+                    position: relative;
+                    font-family: 'Segoe UI', system-ui, sans-serif;">
+            
+            <!-- 头部信息 -->
+            <div style="font-size: 14px;
+                        margin-bottom: 12px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        color: ${align === 'right' ? 'rgba(255,255,255,0.9)' : '#666'};">
+                <span style="font-weight: 600;">${sender}</span>
+                <span style="opacity:0.7; font-size: 0.9em">${time}</span>
+            </div>
+            
+            <!-- 消息主体 -->
+            <div style="background: ${align === 'right' ? '#6366f1' : '#f8f9fa'};
+                        color: ${align === 'right' ? 'white' : '#333'};
+                        padding: 18px;
+                        border-radius: ${align === 'right' ? '20px 20px 4px 20px' : '20px 20px 20px 4px'};
+                        line-height: 1.7;
+                        word-break: break-word;
+                        overflow-wrap: anywhere;
+                        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+                        position: relative;">
+                ${message}
                 
-                <!-- 头像 -->
-                <img src="${avatar}" 
-                     alt="${sender}" 
-                     style="width: 40px; 
-                            height: 40px; 
-                            border-radius: 50%;
-                            border: 2px solid ${align === 'right' ? '#007bff' : '#e0e0e0'};
-                            object-fit: cover;" />
-
-                <!-- 消息内容 -->
-                <div style="max-width: 70%; 
-                            position: relative;
-                            ${align === 'right' ? 'margin-right: 12px;' : 'margin-left: 12px;'}">
-                    <div style="font-size: 12px; 
-                                color: #666; 
-                                margin-bottom: 4px;
-                                text-align: ${align === 'right' ? 'right' : 'left'}">
-                        ${sender} · ${time}
-                    </div>
-                    <div style="background: ${align === 'right' ? '#007bff' : '#f0f0f0'};
-                                color: ${align === 'right' ? 'white' : '#333'};
-                                padding: 12px;
-                                border-radius: ${align === 'right' ? '12px 12px 4px 12px' : '12px 12px 12px 4px'};
-                                line-height: 1.5;
-                                word-break: break-word;
-                                position: relative;">
-                        ${message}
-                        <div style="position: absolute;
-                                    bottom: -6px;
-                                    ${align === 'right' ? 'right: 0;' : 'left: 0;'}
-                                    width: 12px;
-                                    height: 12px;
-                                    background: inherit;
-                                    clip-path: polygon(0 0, 100% 0, 100% 100%);
-                                    transform: rotate(${align === 'right' ? '270deg' : '180deg'});">
-                        </div>
-                    </div>
+                <!-- 小箭头装饰 -->
+                <div style="position: absolute;
+                            bottom: -8px;
+                            ${align === 'right' ? 'right: 12px;' : 'left: 12px;'}
+                            width: 16px;
+                            height: 16px;
+                            background: inherit;
+                            clip-path: polygon(0 0, 100% 0, 100% 100%);
+                            transform: rotate(${align === 'right' ? '270deg' : '180deg'});">
                 </div>
             </div>
-        `;
+        </div>
+    </div>`;
     }
 
     private async convertToImage(chatRecords: string[]): Promise<string> {
         const container = document.createElement('div');
         Object.assign(container.style, {
-            position: 'absolute',
-            left: '-9999px',
-            width: '500px',
-            padding: '24px',
-            backgroundColor: '#fff',
-            borderRadius: '16px',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
-            fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif'
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-0%, -0%)',
+            width: '680px',
+            maxWidth: '90vw',
+            padding: '40px 32px',
+            backgroundColor: '#ffffff',
+            borderRadius: '24px',
+            boxShadow: '0 12px 40px rgba(0,0,0,0.15)',
+            fontFamily: "'Inter', -apple-system, system-ui",
+            zIndex: '99999',
+            overflow: 'hidden',  // 外层容器保持hidden
+            height: 'auto',      // 关键修改点1：改为自动高度
+            maxHeight: 'none'    // 关键修改点2：取消最大高度限制
         });
+
 
         // Header
         const header = document.createElement('div');
         header.innerHTML = `
-            <div style="display: flex; 
-                        align-items: center; 
-                        margin-bottom: 24px;
-                        padding-bottom: 16px;
-                        border-bottom: 1px solid #eee;">
-                <img src="deepseek-logo.png" 
-                     alt="DeepSeek Logo" 
-                     style="width: 36px; height: 36px; margin-right: 12px;">
-                <div>
-                    <div style="font-weight: 600; color: #333;">DeepSeek 助手</div>
-                    <div style="font-size: 12px; color: #666;">聊天记录导出 - ${new Date().toLocaleDateString()}</div>
-                </div>
+    <div style="display: flex;
+                align-items: center;
+                margin-bottom: 32px;
+                padding-bottom: 24px;
+                border-bottom: 1px solid rgba(0,0,0,0.08);">
+        <img src="deepseek-logo.png" 
+             crossorigin="anonymous"
+             style="width: 48px;
+                    height: 48px;
+                    margin-right: 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <div>
+            <div style="font-weight: 700;
+                        color: #2d3748;
+                        font-size: 22px;
+                        letter-spacing: -0.5px;">
+                DeepSeek 助手
             </div>
-        `;
+            <div style="font-size: 14px;
+                        color: #718096;
+                        margin-top: 6px;">
+                ${new Date().toLocaleDateString()} 聊天记录
+            </div>
+        </div>
+    </div>`;
         container.appendChild(header);
 
-        // Messages
+        // 消息内容容器
+        const contentWrapper = document.createElement('div');
+        Object.assign(contentWrapper.style, {
+            maxHeight: '70vh',
+            overflowY: 'auto',
+            paddingRight: '16px',
+            scrollbarWidth: 'thin'  // Firefox兼容
+        });
+
+        // 添加CSS滚动条样式
+        const scrollStyle = document.createElement('style');
+        scrollStyle.textContent = `
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.12);
+            border-radius: 4px;
+        }
+    `;
+        contentWrapper.appendChild(scrollStyle);
+
+        // 添加消息记录
         chatRecords.forEach(record => {
             const div = document.createElement('div');
+            div.style.cssText = `
+            width: 100%;
+            min-width: 0;
+            flex-shrink: 0;
+            contain: content;  // 提升渲染性能
+        `;
             div.innerHTML = record;
-            container.appendChild(div);
+            contentWrapper.appendChild(div);
         });
+        container.appendChild(contentWrapper);
 
         document.body.appendChild(container);
-        const canvas = await html2canvas(container, {
-            backgroundColor: null,
-            logging: false,
-            scale: 2 // 生成高清图片
-        });
-        document.body.removeChild(container);
 
-        return canvas.toDataURL('image/png');
+        // 强制布局计算
+        await new Promise(resolve => {
+            container.offsetHeight; // 触发回流
+            requestAnimationFrame(resolve);
+        });
+
+        try {
+            const canvas = await html2canvas(container, {
+                backgroundColor: '#ffffff',
+                logging: true,
+                scale: 2,
+                useCORS: true,
+                windowWidth: container.offsetWidth,
+                windowHeight: container.scrollHeight,
+                scrollY: 0,
+                onclone: (clonedDoc, element) => {
+                    // 隐藏滚动条
+                    element.style.paddingRight = '8px';
+                    element.querySelectorAll('*').forEach(el => {
+                        if (el instanceof HTMLElement) {
+                            el.style.scrollbarWidth = 'none';
+                        }
+                    });
+                }
+            });
+            return canvas.toDataURL('image/png');
+        } finally {
+            document.body.removeChild(container);
+        }
     }
 
     private async copyImageToClipboard(imageUrl: string) {

@@ -1,8 +1,9 @@
 // FloatingBall.ts
 import FloatingBallStyles from "./FloatingBallStyles";
-import {SettingsPopup} from "./SettingsPopup";
+import { SettingsPopup } from "./SettingsPopup";
 import HelpPopup from "./HelpPopup";
 import AboutPopup from "./AboutPopup";
+import SharePopup from "./SharePopup"; // 新增引入
 
 /**
  * 浮动球主功能类
@@ -128,7 +129,7 @@ export default class FloatingBall {
 
     /**
      * 显示内容弹窗
-     * @param content 弹窗类型：设置/帮助/关于
+     * @param content 弹窗类型：设置/帮助/关于/分享
      */
     private showPopup(content: string): void {
         // 创建蒙版
@@ -150,8 +151,8 @@ export default class FloatingBall {
             new HelpPopup().show(popup);
         } else if (content === '关于') {
             new AboutPopup().show(popup);
-        } else if (content == "分享") {
-            // TODO 2025-02-12 02:08:53
+        } else if (content === '分享') {
+            new SharePopup().show(popup);
         }
 
         // 添加DOM元素
@@ -170,5 +171,4 @@ export default class FloatingBall {
             e.stopPropagation();
         });
     }
-
 }

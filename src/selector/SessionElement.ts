@@ -1,5 +1,6 @@
 // [file name]: Session.ts
 import AnswertElement from "./AnswertElement";
+import QueryElement from "./QueryElement";
 
 /**
  * 会话元素管理类
@@ -16,6 +17,43 @@ export default class SessionElement {
         const refreshBtn = this.findLastRefreshIcon();
         const answerElement = refreshBtn?.parentElement?.parentElement?.parentElement;
         return answerElement ? new AnswertElement(answerElement) : null;
+    }
+
+    /**
+     * 选中所有的对话元素
+     */
+    selectAllTalkElement(): Array<AnswertElement | QueryElement> {
+        const elements = document.querySelectorAll(".dad65929 > div");
+        const talkList = new Array<AnswertElement | QueryElement>();
+        for (let i = 0; i < elements.length; i++) {
+            const element = elements[i];
+            if (this.isAnswerElement(element)) {
+                talkList.push(new AnswertElement(element as HTMLElement));
+            } else if (this.isQueryElement(element)) {
+                talkList.push(new QueryElement(element as HTMLElement));
+            }
+        }
+        return talkList;
+    }
+
+    /**
+     * 判断是否是提问
+     *
+     * @param element
+     * @private
+     */
+    private isQueryElement(element: Element): boolean {
+        return !element.querySelector(".eb23581b");
+    }
+
+    /**
+     * 判断是否是回答
+     *
+     * @param element
+     * @private
+     */
+    private isAnswerElement(element: Element): boolean {
+        return !!element.querySelector(".eb23581b");
     }
 
     /**

@@ -37,12 +37,33 @@ export class SettingsPopup {
                         </div>
                     </div>
                 </div>
+                <h3>回答完毕通知方式</h3>
+                <!-- 新增在设置弹窗容器内 -->
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="deepThinkingNotify" checked> 
+                        <span>仅当深度思考通知</span>
+                    </label>
+                    <div class="setting-tip">仅在深度思考模式完成时弹出系统通知</div>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">提示音：</label>
+                    <select id="notificationSound" class="setting-select">
+                        <option value="none">无声音</option>
+                        <option value="ding1" selected>叮~</option>
+                        <option value="ding2">叮咚</option>
+                        <option value="beep">哔哔声</option>
+                    </select>
+                </div>
             </div>
         `;
     }
 
     show(popup: HTMLElement) {
         popup.innerHTML = this.innerHTML;
+
+        this.initNotificationSettings();
 
         // 绑定算法选择切换事件
         const algorithmSelect = popup.querySelector('#retryAlgorithmSelect');
@@ -52,6 +73,28 @@ export class SettingsPopup {
             const fixedTimeConfig = popup.querySelector('#fixedTimeConfig') as HTMLElement;
             exponentialExplanation.style.display = value === 'fixed' ? 'none' : 'block';
             fixedTimeConfig.style.display = value === 'fixed' ? 'block' : 'none';
+        });
+    }
+
+    private initNotificationSettings() {
+        const { deepThinkingOnly, soundType } = SettingsManager.getSettings();
+
+        // 绑定复选框
+        const checkbox = document.getElementById('deepThinkingNotify') as HTMLInputElement;
+        checkbox.checked = deepThinkingOnly;
+        checkbox.addEventListener('change', () => {
+            const settings = SettingsManager.getSettings();
+            settings.deepThinkingOnly = checkbox.checked;
+            SettingsManager.saveSettings(settings);
+        });
+
+        // 绑定下拉框
+        const select = document.getElementById('notificationSound') as HTMLSelectElement;
+        select.value = soundType;
+        select.addEventListener('change', () => {
+            const settings = SettingsManager.getSettings();
+            settings.soundType = select.value as any;
+            SettingsManager.saveSettings(settings);
         });
     }
 

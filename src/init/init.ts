@@ -33,7 +33,7 @@ export default async function init() {
 
     setTimeout(() => {
         new FloatingBall();
-    }, 1000);
+    }, 0);
 
     // 初始化异常重试机制
     // 配置全局请求失败时的重试策略
