@@ -15,7 +15,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/typings"
+    ],
+    "baseUrl": "./src", // 必须添加baseUrl
+    "paths": {
+      "@assets/*": ["assets/*"] // 修正路径映射
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

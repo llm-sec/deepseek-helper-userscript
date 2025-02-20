@@ -1,3 +1,4 @@
+// webpack.common.js 新增MP3处理规则
 const path = require("path");
 const webpack = require("webpack");
 const webpackPackageJson = require("./package.json");
@@ -5,17 +6,19 @@ const fs = require("fs");
 
 module.exports = {
     entry: {
-        index: "./src/index.ts"  // 修改入口文件为 .ts
+        index: "./src/index.ts"
     },
     output: {
-        // filename: "[name]-[hash].js",
         filename: "[name].js",
         path: path.resolve(__dirname, "dist"),
+        publicPath: "/" // 新增公共路径配置
     },
     resolve: {
-        extensions: [".ts", ".js"]  // 添加 .ts 扩展名
+        extensions: [".ts", ".js"],
+        alias: {
+            '@assets': path.resolve(__dirname, 'src/assets') // 添加webpack别名
+        }
     },
-    optimization: {},
     plugins: [
         // 在打包后的文件头插入一些banner信息，官方插件：
         // https://webpack.js.org/plugins/banner-plugin/
@@ -71,6 +74,16 @@ module.exports = {
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 use: ['file-loader']
+            },
+            {
+                test: /\.mp3$/,
+                type: 'asset/inline',
+                generator: {
+                    dataUrl: {
+                        encoding: 'base64',
+                        mimetype: 'audio/mpeg'
+                    }
+                }
             }
         ]
     }

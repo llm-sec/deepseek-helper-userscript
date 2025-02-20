@@ -8,4 +8,5 @@
 // @match        https://chat.deepseek.com/*
 // @match        https://yuanbao.tencent.com/*
 // @run-at       document-start
+// @grant        GM_notification
 // ==/UserScript==
