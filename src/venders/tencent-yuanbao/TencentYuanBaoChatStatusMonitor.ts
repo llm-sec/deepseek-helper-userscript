@@ -5,6 +5,7 @@ import TencentYuanBaoChatList from "./TencentYuanBaoChatList";
 import TencentYuanBaoChat from "./TencentYuanBaoChat";
 import logger from "../../logger/Logger";
 import alarmSound from '@assets/audio/explosion-42132.mp3';
+import FaviconManager from "../../ui/FaviconManager";
 
 /**
  * 智能聊天状态监控系统
@@ -16,7 +17,7 @@ export default class TencentYuanBaoChatStatusMonitor {
         elementHash?: string;
         isThinking: boolean;
         isAnswerDone: boolean;
-        thinkingCompleted: boolean; // 新增思考完成标记
+        thinkingCompleted: boolean;
     } = {isThinking: false, isAnswerDone: false, thinkingCompleted: false};
 
     // 配置参数（保持不变）
@@ -24,6 +25,9 @@ export default class TencentYuanBaoChatStatusMonitor {
         POLL_INTERVAL: 100,
         NOTIFICATION_TIMEOUT: 5000
     };
+
+    // 图标管理器实例
+    private static faviconManager = new FaviconManager();
 
     // 音频资源（保持不变）
     private static readonly NOTIFICATION_SOUND = {
@@ -58,6 +62,9 @@ export default class TencentYuanBaoChatStatusMonitor {
 
         if (this.isStatusChanged(currentHash, currentIsThinking, currentIsAnswerDone)) {
             logger.info(`chatId = ${currentHash}, 状态变更: 思考中[${currentIsThinking}] 回答完成[${currentIsAnswerDone}]`);
+
+            // 更新图标状态
+            this.updateFaviconState(currentIsThinking, currentIsAnswerDone);
 
             // 保存旧状态用于状态转移判断
             const previousState = {
@@ -98,10 +105,26 @@ export default class TencentYuanBaoChatStatusMonitor {
             if (isCompletedToAnswered) {
                 logger.info("触发状态转移：思考完成 → 回答完成");
                 await this.handleAnswerReady(chat);
-                this.lastState.thinkingCompleted = false; // 重置中间状态
+                this.lastState.thinkingCompleted = false;
             }
 
             shouldUpdateState();
+        }
+    }
+
+    /**
+     * 更新网页图标状态
+     */
+    private static updateFaviconState(isThinking: boolean, isAnswerDone: boolean): void {
+        try {
+            if (isThinking) {
+                this.faviconManager.setLoading();
+            } else if (isAnswerDone) {
+                this.faviconManager.setCompleted();
+            }
+        } catch (error) {
+            console.error('图标状态更新失败:', error);
+            logger.error(`图标操作异常: ${(error as Error).message}`);
         }
     }
 
