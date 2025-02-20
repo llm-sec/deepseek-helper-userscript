@@ -105,7 +105,8 @@ export default class TencentYuanBaoChat {
     async foldThinkContent(): Promise<void> {
         const thinkElement = this._element.querySelector('.hyc-component-reasoner__think');
         if (thinkElement?.classList.contains('hyc-component-reasoner__think--expand')) {
-            await new MouseSimulator().click(thinkElement);
+            // TODO 模拟鼠标操作
+            await new MouseSimulator().click(thinkElement.querySelector(".hyc-component-reasoner__think-header__content"));
         }
     }
 

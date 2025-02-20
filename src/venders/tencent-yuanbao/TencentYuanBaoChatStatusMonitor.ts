@@ -11,7 +11,7 @@ import alarmSound from '@assets/audio/explosion-42132.mp3';
  * 功能：监测AI消息状态变化并发送系统通知
  */
 export default class TencentYuanBaoChatStatusMonitor {
-// 增强状态缓存（新增thinkingCompleted中间状态）
+    // 增强状态缓存（新增thinkingCompleted中间状态）
     private static lastState: {
         elementHash?: string;
         isThinking: boolean;
@@ -84,6 +84,15 @@ export default class TencentYuanBaoChatStatusMonitor {
             if (isThinkingToCompleted) {
                 logger.info("触发状态转移：思考中 → 思考完成");
                 this.lastState.thinkingCompleted = true;
+
+                // 新增自动折叠逻辑
+                try {
+                    await chat.foldThinkContent();
+                    logger.info(`chatId = ${currentHash}, 已自动折叠思考过程`);
+                } catch (error) {
+                    logger.error(`折叠失败: ${(error as Error).message}`);
+                    console.error('折叠操作异常:', error);
+                }
             }
 
             if (isCompletedToAnswered) {

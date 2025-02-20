@@ -76,7 +76,6 @@ export default class MouseSimulator {
         const fullInit: MouseEventInit = {
             bubbles: true,
             cancelable: true,
-            view: window,
             clientX: position.x,
             clientY: position.y,
             ...initArgs,
@@ -84,7 +83,9 @@ export default class MouseSimulator {
         };
 
         const event = new MouseEvent(eventType, fullInit);
-        Object.defineProperty(event, 'isTrusted', {value: true});
+
+        // 移除isTrusted属性重定义逻辑
+        // Object.defineProperty(event, 'isTrusted', {value: true});  // 这行是错误根源
 
         this.log(`派发 ${eventType} 事件在 (${position.x}, ${position.y})`);
         return target.dispatchEvent(event);
@@ -131,26 +132,6 @@ export default class MouseSimulator {
     }
 
     /**
-     * 人类化移动轨迹生成
-     * @private
-     */
-    private async humanizedMove(targetX: number, targetY: number): Promise<void> {
-        const steps = 30;
-        const {x: startX, y: startY} = this.state.position;
-
-        for (let i = 0; i <= steps; i++) {
-            const t = i / steps;
-            // 贝塞尔曲线插值
-            const x = startX + (targetX - startX) * this.easeInOutQuad(t);
-            const y = startY + (targetY - startY) * this.easeInOutQuad(t);
-
-            this.state.position = {x, y};
-            this.dispatchEvent(document.body, 'mousemove');
-            await this.delay(10);
-        }
-    }
-
-    /**
      * 缓动函数
      * @private
      */
@@ -185,46 +166,49 @@ export default class MouseSimulator {
         this.state.buttonState = 0;
     }
 
-    // 公共方法
-
-    /**
-     * 移动鼠标到指定位置或元素
-     */
-    public async moveTo(target: Element | { x: number; y: number }): Promise<void> {
-        const targetPos = target instanceof Element
-            ? this.calculateElementCenter(target)
-            : target;
-
-        if (this.options.humanize) {
-            await this.humanizedMove(targetPos.x, targetPos.y);
-        } else {
-            this.state.position = targetPos;
-            this.dispatchEvent(document.body, 'mousemove');
-        }
-    }
-
     /**
      * 执行点击操作
      * @param target 支持选择器、元素对象或坐标
      * @param button 0-左键 1-中键 2-右键
      */
     public async click(
-        target: string | Element | { x: number; y: number },
+        target: string | Element | { x: number; y: number } | null,
         button: number = 0
     ): Promise<void> {
+
+        if (!target) {
+            return;
+        }
+
         let element: Element;
-        let pos: { x: number; y: number };
 
         if (typeof target === 'string' || target instanceof Element) {
             element = await this.locateElement(target);
-            pos = this.calculateElementCenter(element);
         } else {
-            pos = target;
-            element = document.elementFromPoint(pos.x, pos.y)!;
+            element = document.elementFromPoint(target.x, target.y)!;
         }
 
-        await this.moveTo(pos);
+        // 直接更新坐标但不触发移动事件
+        const pos = target instanceof Element
+            ? this.calculateElementCenter(element)
+            : target;
+        // this.state.position = pos;
+
+        // 直接执行点击序列
         await this.performClickSequence(element, button);
+    }
+
+    // 禁用鼠标移动模拟
+    private async humanizedMove(): Promise<void> {
+        return Promise.resolve(); // 空实现
+    }
+
+    // 修改移动方法为直接更新坐标
+    public async moveTo(target: Element | { x: number; y: number }): Promise<void> {
+        const targetPos = target instanceof Element
+            ? this.calculateElementCenter(target)
+            : target;
+        this.state.position = targetPos;
     }
 
     /**
