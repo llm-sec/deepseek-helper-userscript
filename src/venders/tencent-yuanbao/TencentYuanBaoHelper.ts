@@ -1,5 +1,6 @@
 import TencentYuanBaoChatStatusMonitor from "./TencentYuanBaoChatStatusMonitor";
 import logger from "../../logger/Logger";
+import TencentYuanBaoDownloadApp from "./TencentYuanBaoDownloadApp";
 
 /**
  * 辅助使用腾讯元宝
@@ -13,7 +14,9 @@ export default class TencentYuanBaoHelper {
         logger.info("开始初始化腾讯元宝问答助手");
         setTimeout(() => {
             TencentYuanBaoChatStatusMonitor.run();
+            TencentYuanBaoDownloadApp.waitForClose();
         }, 0);
+
     }
 
 }
