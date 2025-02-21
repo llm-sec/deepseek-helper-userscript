@@ -10,8 +10,11 @@
 // @run-at       document-start
 // @require      file:///Users/cc11001100/github/llm-sec/deepseek-helper-userscript/dist/index.js
 // @grant        GM_notification
+// @grant        GM_xmlhttpRequest
+// @grant        GM_info
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @connect      api.github.com
 // ==/UserScript==
 
 ( () => {

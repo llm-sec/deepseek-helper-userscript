@@ -9,4 +9,9 @@
 // @match        https://yuanbao.tencent.com/*
 // @run-at       document-start
 // @grant        GM_notification
+// @grant        GM_xmlhttpRequest
+// @grant        GM_info
+// @grant        GM_getValue
+// @grant        GM_setValue
+// @connect      api.github.com
 // ==/UserScript==
