@@ -1,3 +1,5 @@
+import {SettingsManager} from "./SettingsManager";
+
 /**
  * 设置弹窗
  */
@@ -63,7 +65,7 @@ export class SettingsPopup {
     show(popup: HTMLElement) {
         popup.innerHTML = this.innerHTML;
 
-        this.initNotificationSettings();
+        // this.initNotificationSettings();
 
         // 绑定算法选择切换事件
         const algorithmSelect = popup.querySelector('#retryAlgorithmSelect');

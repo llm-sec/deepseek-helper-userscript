@@ -6,7 +6,9 @@
 // @document     ${document}
 // @author       ${author}
 // @match        https://chat.deepseek.com/*
+// @match        https://kimi.moonshot.cn/*
 // @match        https://yuanbao.tencent.com/*
+// @match        https://www.wenxiaobai.com/*
 // @run-at       document-start
 // @grant        GM_notification
 // @grant        GM_xmlhttpRequest

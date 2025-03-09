@@ -6,7 +6,9 @@
 // @document     https://github.com/llm-sec/deepseek-helper-userscript
 // @author       CC11001100 <CC11001100@qq.com>
 // @match        https://chat.deepseek.com/*
+// @match        https://kimi.moonshot.cn/*
 // @match        https://yuanbao.tencent.com/*
+// @match        https://www.wenxiaobai.com/*
 // @run-at       document-start
 // @require      file:///Users/cc11001100/github/llm-sec/deepseek-helper-userscript/dist/index.js
 // @grant        GM_notification

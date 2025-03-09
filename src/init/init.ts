@@ -29,6 +29,9 @@ const DOMAIN_FEATURES: Record<string, (config: InitConfig) => Promise<void>> = {
         config.logLevel = LogLevel.DEBUG;
         config.enableColors = true;
         await TencentYuanBaoHelper.init();
+    },
+    "www.wenxiaobai.com": async (config) => {
+        alert("初始化了");
     }
 };
 
@@ -49,11 +52,11 @@ const CORE_INIT_TASKS = [
     async (config: InitConfig) => {
         if (config.enableFloatingBall) {
             await new Promise(resolve => {
-                const ball = new FloatingBall();
-                // ball.on('ready', resolve);
-                setTimeout(resolve, 1000); // 超时保护
+                // const ball = new FloatingBall();
+                // // ball.on('ready', resolve);
+                // setTimeout(resolve, 1000); // 超时保护
+                // logger.debug('悬浮球初始化完成');
             });
-            logger.debug('悬浮球初始化完成');
         }
     },
 

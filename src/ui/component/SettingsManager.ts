@@ -1,11 +1,11 @@
 // 新增类型定义
-interface NotificationSettings {
+export interface NotificationSettings {
     deepThinkingOnly: boolean;
     soundType: 'none' | 'ding1' | 'ding2' | 'beep';
 }
 
 // 配置存储逻辑
-class SettingsManager {
+export class SettingsManager {
     private static STORAGE_KEY = 'notification_settings';
 
     static getSettings(): NotificationSettings {
