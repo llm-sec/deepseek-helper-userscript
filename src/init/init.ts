@@ -7,7 +7,7 @@
 
 import runCrazyRetry from "../crazy-retry/crazy-retry";
 import logger, {LogLevel} from "../logger/Logger";
-import FloatingBall from "../ui/component/FloatingBall";
+// 移除旧的FloatingBall导入，现在使用React组件
 import TencentYuanBaoHelper from "../venders/tencent-yuanbao/TencentYuanBaoHelper";
 import WenXiaoBaiHelper from "../venders/wenxiaobao/WenXiaoBaiHelper";
 
@@ -53,21 +53,17 @@ const CORE_INIT_TASKS = [
 
     // 第二阶段：UI组件初始化
     async (config: InitConfig) => {
-        // if (config.enableFloatingBall) {
-        //     await new Promise(resolve => {
-        //         // const ball = new FloatingBall();
-        //         // // ball.on('ready', resolve);
-        //         // setTimeout(resolve, 1000); // 超时保护
-        //         // logger.debug('悬浮球初始化完成');
-        //     });
-        // }
+        // FloatingBall现在在content/render.tsx中初始化
+        logger.debug('UI组件初始化阶段完成');
     },
 
     // 第三阶段：核心功能初始化
-    // async (config: InitConfig) => {
-    //     await runCrazyRetry();
-    //     logger.debug('异常重试机制初始化完成');
-    // }
+    async (config: InitConfig) => {
+        // 暂时注释掉疯狂重试功能，需要时可以取消注释
+        // await runCrazyRetry();
+        // logger.debug('异常重试机制初始化完成');
+        logger.debug('核心功能初始化阶段完成');
+    }
 ];
 
 /**
