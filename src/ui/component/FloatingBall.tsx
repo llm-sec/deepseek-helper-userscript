@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import styles from './FloatingBall.module.css';
+// 移除CSS模块导入，改用内联样式
+// import styles from './FloatingBall.module.css';
 
 interface MenuItemConfig {
     icon: string;
@@ -11,6 +12,63 @@ interface MenuItemConfig {
 interface FloatingBallProps {
     menuConfig: MenuItemConfig[];
 }
+
+// 内联样式定义
+const inlineStyles = {
+    container: {
+        position: 'fixed' as const,
+        bottom: '20px',
+        right: '20px',
+        zIndex: 9999,
+    },
+    ball: {
+        width: '56px',
+        height: '56px',
+        background: '#2196F3',
+        borderRadius: '50%',
+        position: 'relative' as const,
+        cursor: 'pointer',
+        boxShadow: '0 4px 12px rgba(33, 150, 243, 0.25)',
+        transition: 'all 0.28s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    },
+    ballActive: {
+        transform: 'rotate(225deg)',
+    },
+    menu: {
+        position: 'fixed' as const,
+        bottom: '20px',
+        right: '20px',
+        pointerEvents: 'none' as const,
+        opacity: 0,
+        transition: 'opacity 0.28s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    },
+    menuActive: {
+        opacity: 1,
+        pointerEvents: 'auto' as const,
+    },
+    menuItem: {
+        position: 'absolute' as const,
+        width: '48px',
+        height: '48px',
+        background: 'white',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 3px 8px rgba(0, 0, 0, 0.15)',
+        cursor: 'pointer',
+        opacity: 0,
+        transform: 'translate(0, 0)',
+        transition: 'all 0.28s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    },
+    menuItemActive: {
+        opacity: 1,
+    },
+    menuItemLabel: {
+        marginLeft: '8px',
+        fontSize: '14px',
+    }
+};
 
 const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
     const [isMenuOpen, setMenuOpen] = useState(false);
@@ -66,15 +124,21 @@ const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
     };
 
     return (
-        <div className={styles.container} ref={containerRef}>
+        <div style={inlineStyles.container} ref={containerRef}>
             <div
-                className={`${styles.ball} ${isMenuOpen ? styles.active : ''}`}
+                style={{
+                    ...inlineStyles.ball,
+                    ...(isMenuOpen ? inlineStyles.ballActive : {})
+                }}
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onTouchStart={toggleMenu}
             />
             <div
-                className={`${styles.menu} ${isMenuOpen ? styles.active : ''}`}
+                style={{
+                    ...inlineStyles.menu,
+                    ...(isMenuOpen ? inlineStyles.menuActive : {})
+                }}
                 onMouseEnter={() => leaveTimer.current && clearTimeout(leaveTimer.current)}
                 onMouseLeave={handleMouseLeave}
             >
@@ -86,8 +150,9 @@ const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
                     return (
                         <div
                             key={index}
-                            className={styles.menuItem}
                             style={{
+                                ...inlineStyles.menuItem,
+                                ...(isMenuOpen ? inlineStyles.menuItemActive : {}),
                                 color: item.color,
                                 transform: `translate(${x}px, ${y}px)`,
                                 transitionDelay: `${index * 40}ms`,
@@ -99,7 +164,7 @@ const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
                             }}
                         >
                             <i className={`fas ${item.icon}`} />
-                            {item.label && <span className={styles.menuItemLabel}>{item.label}</span>}
+                            {item.label && <span style={inlineStyles.menuItemLabel}>{item.label}</span>}
                         </div>
                     );
                 })}
