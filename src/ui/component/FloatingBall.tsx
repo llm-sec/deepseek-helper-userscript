@@ -20,6 +20,8 @@ const inlineStyles = {
         bottom: '20px',
         right: '20px',
         zIndex: 9999,
+        width: '56px',
+        height: '56px',
     },
     ball: {
         width: '56px',
@@ -30,9 +32,28 @@ const inlineStyles = {
         cursor: 'pointer',
         boxShadow: '0 4px 12px rgba(33, 150, 243, 0.25)',
         transition: 'all 0.28s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    ballBefore: {
+        content: '""',
+        position: 'absolute' as const,
+        width: '24px',
+        height: '2px',
+        backgroundColor: 'white',
+        transition: 'transform 0.3s ease',
+    },
+    ballAfter: {
+        content: '""',
+        position: 'absolute' as const,
+        width: '2px',
+        height: '24px',
+        backgroundColor: 'white',
+        transition: 'transform 0.3s ease',
     },
     ballActive: {
-        transform: 'rotate(225deg)',
+        transform: 'rotate(45deg)',
     },
     menu: {
         position: 'fixed' as const,
@@ -41,6 +62,8 @@ const inlineStyles = {
         pointerEvents: 'none' as const,
         opacity: 0,
         transition: 'opacity 0.28s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        width: '300px',
+        height: '300px',
     },
     menuActive: {
         opacity: 1,
@@ -65,13 +88,27 @@ const inlineStyles = {
         opacity: 1,
     },
     menuItemLabel: {
-        marginLeft: '8px',
-        fontSize: '14px',
+        position: 'absolute' as const,
+        whiteSpace: 'nowrap' as const,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        color: 'white',
+        padding: '4px 8px',
+        borderRadius: '4px',
+        fontSize: '12px',
+        top: '-30px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        opacity: 0,
+        transition: 'opacity 0.2s ease',
+    },
+    menuItemLabelVisible: {
+        opacity: 1,
     }
 };
 
 const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
     const [isMenuOpen, setMenuOpen] = useState(false);
+    const [hoveredItem, setHoveredItem] = useState<number | null>(null);
     const enterTimer = useRef<number | null>(null);
     const leaveTimer = useRef<number | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -116,11 +153,54 @@ const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
         };
     }, []);
 
-    const calculateAngle = (index: number): number => {
+    const calculatePosition = (index: number): { x: number, y: number } => {
         const total = menuConfig.length;
-        const startAngle = -Math.PI / 2 - (135 * Math.PI / 180) / 2;
-        const angleStep = total > 1 ? (135 * Math.PI / 180) / (total - 1) : 0;
-        return startAngle + angleStep * index;
+        // 使用固定位置而不是角度计算，确保布局一致
+        switch (total) {
+            case 1:
+                return { x: 0, y: -120 };
+            case 2:
+                return index === 0 ? { x: -100, y: -60 } : { x: 0, y: -120 };
+            case 3:
+                switch (index) {
+                    case 0: return { x: -100, y: -60 };
+                    case 1: return { x: 0, y: -120 };
+                    case 2: return { x: 100, y: -60 };
+                    default: return { x: 0, y: 0 };
+                }
+            case 4:
+                switch (index) {
+                    case 0: return { x: -100, y: -60 };
+                    case 1: return { x: -60, y: -100 };
+                    case 2: return { x: 60, y: -100 };
+                    case 3: return { x: 100, y: -60 };
+                    default: return { x: 0, y: 0 };
+                }
+            default:
+                // 如果有更多项目，使用圆形布局
+                const angle = (index / total) * Math.PI * 2 - Math.PI / 2;
+                const radius = 120;
+                return {
+                    x: Math.cos(angle) * radius,
+                    y: Math.sin(angle) * radius
+                };
+        }
+    };
+
+    // 创建加号图标
+    const renderPlusIcon = () => {
+        return (
+            <>
+                <div style={{
+                    ...inlineStyles.ballBefore,
+                    transform: isMenuOpen ? 'rotate(45deg)' : 'rotate(0deg)'
+                }} />
+                <div style={{
+                    ...inlineStyles.ballAfter,
+                    transform: isMenuOpen ? 'rotate(45deg)' : 'rotate(0deg)'
+                }} />
+            </>
+        );
     };
 
     return (
@@ -133,7 +213,9 @@ const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={handleMouseLeave}
                 onTouchStart={toggleMenu}
-            />
+            >
+                {renderPlusIcon()}
+            </div>
             <div
                 style={{
                     ...inlineStyles.menu,
@@ -143,10 +225,9 @@ const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
                 onMouseLeave={handleMouseLeave}
             >
                 {menuConfig.map((item, index) => {
-                    const angle = calculateAngle(index);
-                    const radius = 120;
-                    const x = radius * Math.cos(angle);
-                    const y = radius * Math.sin(angle);
+                    const { x, y } = calculatePosition(index);
+                    const isHovered = hoveredItem === index;
+                    
                     return (
                         <div
                             key={index}
@@ -154,7 +235,7 @@ const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
                                 ...inlineStyles.menuItem,
                                 ...(isMenuOpen ? inlineStyles.menuItemActive : {}),
                                 color: item.color,
-                                transform: `translate(${x}px, ${y}px)`,
+                                transform: isMenuOpen ? `translate(${x}px, ${y}px)` : 'translate(0, 0)',
                                 transitionDelay: `${index * 40}ms`,
                             }}
                             onClick={(e) => {
@@ -162,9 +243,20 @@ const FloatingBall: React.FC<FloatingBallProps> = ({ menuConfig }) => {
                                 item.action();
                                 hideMenu();
                             }}
+                            onMouseEnter={() => setHoveredItem(index)}
+                            onMouseLeave={() => setHoveredItem(null)}
                         >
-                            <i className={`fas ${item.icon}`} />
-                            {item.label && <span style={inlineStyles.menuItemLabel}>{item.label}</span>}
+                            <i className={`fas ${item.icon}`} style={{ fontSize: '20px' }} />
+                            {item.label && (
+                                <div
+                                    style={{
+                                        ...inlineStyles.menuItemLabel,
+                                        ...(isHovered ? inlineStyles.menuItemLabelVisible : {})
+                                    }}
+                                >
+                                    {item.label}
+                                </div>
+                            )}
                         </div>
                     );
                 })}
