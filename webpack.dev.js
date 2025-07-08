@@ -5,9 +5,9 @@ const path = require("path");
 
 module.exports = env => {
     return merge(common, {
-        mode: "none",
+        mode: "development",
         //开启这个可以在开发环境中调试代码
-        devtool: "source-map",
+        devtool: "inline-source-map",
         devServer: {
             static: false,
             allowedHosts: "all",

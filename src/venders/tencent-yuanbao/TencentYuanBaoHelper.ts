@@ -12,11 +12,8 @@ export default class TencentYuanBaoHelper {
      */
     static async init() {
         logger.info("开始初始化腾讯元宝问答助手");
-        setTimeout(() => {
-            TencentYuanBaoChatStatusMonitor.run();
-            TencentYuanBaoDownloadApp.waitForClose();
-        }, 0);
-
+        TencentYuanBaoChatStatusMonitor.run();
+        TencentYuanBaoDownloadApp.waitForClose();
     }
 
 }

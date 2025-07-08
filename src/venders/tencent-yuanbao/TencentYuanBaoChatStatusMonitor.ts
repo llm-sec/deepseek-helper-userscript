@@ -26,9 +26,6 @@ export default class TencentYuanBaoChatStatusMonitor {
         NOTIFICATION_TIMEOUT: 5000
     };
 
-    // 图标管理器实例
-    private static faviconManager = new FaviconManager();
-
     // 音频资源（保持不变）
     private static readonly NOTIFICATION_SOUND = {
         URL: 'https://cdn.pixabay.com/audio/2024/10/24/audio_90a178a3df.mp3',
@@ -117,10 +114,13 @@ export default class TencentYuanBaoChatStatusMonitor {
      */
     private static updateFaviconState(isThinking: boolean, isAnswerDone: boolean): void {
         try {
+            const faviconManager = FaviconManager.getInstance();
+            if (!faviconManager) return;
+
             if (isThinking) {
-                this.faviconManager.setLoading();
+                faviconManager.setLoading();
             } else if (isAnswerDone) {
-                this.faviconManager.setCompleted();
+                faviconManager.setCompleted();
             }
         } catch (error) {
             console.error('图标状态更新失败:', error);
@@ -166,13 +166,15 @@ export default class TencentYuanBaoChatStatusMonitor {
                 logger.error(`音频初始化失败: ${(audioError as Error).message}`);
                 console.error('音频初始化错误:', audioError);
             }
-
-            GM_notification({
-                title: title,
-                text: this.formatNotificationBody(body),
-                timeout: this.ensurePositiveTimeout(),
-                onclick: () => window.focus(),
-                silent: false
+            
+            chrome.runtime.sendMessage({
+                type: 'showNotification',
+                options: {
+                    title: title,
+                    message: this.formatNotificationBody(body),
+                    type: 'basic',
+                    iconUrl: 'icons/icon128.png' // background中无法访问getURL，直接使用相对路径
+                }
             });
         } catch (error) {
             console.error('通知发送失败:', error);

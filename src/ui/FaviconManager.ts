@@ -3,14 +3,26 @@ export default class FaviconManager {
     private linkElement: HTMLLinkElement;
     private isLoading: boolean = false;
     private canvasCache: HTMLCanvasElement | null = null;
+    private static instance: FaviconManager | null = null;
 
-    constructor() {
+    private constructor() {
         this.linkElement = this.getFaviconLink();
         this.originalHref = this.linkElement.href;
         this.initVisibilityHandler();
         if (!this.originalHref) {
             console.warn('Initial favicon href is empty, animated effects may not work properly');
         }
+    }
+
+    public static getInstance(): FaviconManager | null {
+        if (!document.head) {
+            console.warn('Document head not available yet');
+            return null;
+        }
+        if (!this.instance) {
+            this.instance = new FaviconManager();
+        }
+        return this.instance;
     }
 
     private initVisibilityHandler() {

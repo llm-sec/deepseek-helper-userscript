@@ -9,6 +9,7 @@ import runCrazyRetry from "../crazy-retry/crazy-retry";
 import logger, {LogLevel} from "../logger/Logger";
 import FloatingBall from "../ui/component/FloatingBall";
 import TencentYuanBaoHelper from "../venders/tencent-yuanbao/TencentYuanBaoHelper";
+import WenXiaoBaiHelper from "../venders/wenxiaobao/WenXiaoBaiHelper";
 
 // 初始化配置类型
 interface InitConfig {
@@ -19,10 +20,10 @@ interface InitConfig {
 
 // 域名功能映射
 const DOMAIN_FEATURES: Record<string, (config: InitConfig) => Promise<void>> = {
-    'example.com': async (config) => {
-        // 示例域名的特殊初始化逻辑
+    'chat.deepseek.com': async (config) => {
+        config.logLevel = LogLevel.DEBUG;
+        config.enableColors = true;
         config.enableFloatingBall = true;
-        // await import('../features/example-feature').then(m => m.init());
     },
     'yuanbao.tencent.com': async (config) => {
         // 管理后台的特殊初始化
@@ -31,7 +32,9 @@ const DOMAIN_FEATURES: Record<string, (config: InitConfig) => Promise<void>> = {
         await TencentYuanBaoHelper.init();
     },
     "www.wenxiaobai.com": async (config) => {
-        alert("初始化了");
+        config.logLevel = LogLevel.DEBUG;
+        config.enableColors = true;
+        await WenXiaoBaiHelper.init();
     }
 };
 
@@ -50,14 +53,14 @@ const CORE_INIT_TASKS = [
 
     // 第二阶段：UI组件初始化
     async (config: InitConfig) => {
-        if (config.enableFloatingBall) {
-            await new Promise(resolve => {
-                // const ball = new FloatingBall();
-                // // ball.on('ready', resolve);
-                // setTimeout(resolve, 1000); // 超时保护
-                // logger.debug('悬浮球初始化完成');
-            });
-        }
+        // if (config.enableFloatingBall) {
+        //     await new Promise(resolve => {
+        //         // const ball = new FloatingBall();
+        //         // // ball.on('ready', resolve);
+        //         // setTimeout(resolve, 1000); // 超时保护
+        //         // logger.debug('悬浮球初始化完成');
+        //     });
+        // }
     },
 
     // 第三阶段：核心功能初始化
