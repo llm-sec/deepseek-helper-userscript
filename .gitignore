@@ -130,3 +130,25 @@ dist
 .pnp.*
 
 .idea
+
+# Build and distribution
+dist/
+build/
+*.log
+*.out
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.env
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
