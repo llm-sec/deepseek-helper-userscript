@@ -152,3 +152,274 @@ yarn-error.log*
 *.swo
 .DS_Store
 Thumbs.db
+# Dependencies
+vendor/
+bower_components/
+# Build outputs
+coverage/
+.out/
+.bundle/
+pids/
+lib-cov/
+.grunt/
+build/Release/
+# TypeScript v1 output
+typings/
+# TypeDoc docs
+docs/
+# Output of `npm pack`
+.next/
+out/
+# Nuxt.js build output
+.nuxt/
+# Vue.js build output
+# dotenv environment variables file
+.env.staging.local
+# nuxt generate
+.generate/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+.ENV
+.venv.bak/
+env.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+cover/
+# Django
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+# Flask
+instance/
+.webassets-cache
+# Jupyter Notebook
+.ipynb_checkpoints
+# IPython
+profile_default/
+ipython_config.py
+# pyenv
+.python-version
+# pipenv
+.Pipfile.lock
+# PEP 582
+__pypackages__/
+# Celery
+celerybeat-schedule
+celerybeat.pid
+# SageMath parsed files
+*.sage.py
+# Environments
+.venv
+venv.bak/
+# Spyder project settings
+.spyderproject
+.spyproject
+# Rope project settings
+.ropeproject
+# mkdocs documentation
+/site/
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+# Pyre type checker
+.pyre/
+*~
+# OS generated files
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+# Compiled source
+*.exe
+*.dll
+*.o
+*.a
+*.dylib
+# Archives
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+# Testing
+*.gem
+*.deb
+*.rpm
+*.dmg
+# Documentation
+doc/
+# CI
+.semaphore/
+.circleci/
+# Docker
+.docker/
+# Editor specific
+*.orig
+# Go specific
+*.test
+*.prof
+.air.toml
+.air.db
+.air.go
+.air
+.go
+# Java/Kotlin
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.mar
+target/
+!target/README
+!build/README
+.gradle/
+!gradle.properties
+!gradlew
+!gradlew.bat
+!gradle/
+nb-configuration.xml
+nbactions.xml
+.externalToolBuilders/
+*.launch
+.settings/
+!settings.xml
+!META-INF/
+!META-INF/MANIFEST.MF
+*.iws
+*.iml
+*.ipr
+bin/
+obj/
+!.gitattributes
+!*.gitignore
+!*.sh
+!*.bat
+!*.cmd
+!*.ps1
+!*.py
+!*.rb
+!*.pl
+!*.php
+!*.js
+!*.ts
+!*.java
+!*.scala
+!*.clj
+!*.cljs
+!*.coffee
+!*.dart
+!*.ex
+!*.exs
+!*.erl
+!*.hs
+!*.lhs
+!*.lua
+!*.ml
+!*.mli
+!*.nim
+!*.r
+!*.rake
+!*.rs
+!*.sc
+!*.sql
+!*.swift
+!*.txt
+!*.xml
+!*.yaml
+!*.yml
+!*.toml
+!*.ini
+!*.cfg
+!*.conf
+!*.json
+!*.lock
+!*.md
+!*.markdown
+!*.rst
+!*.textile
+!*.org
+!*.pod
+!*.tex
+!*.cls
+!*.sty
+!*.bib
+!*.dtx
+!*.ins
+!*.eps
+!*.pdf
+!*.png
+!*.jpg
+!*.jpeg
+!*.gif
+!*.svg
+!*.ico
+!*.bmp
+!*.tiff
+!*.webp
+!*.avif
+!*.apng
+!*.cur
+!*.ani
+!*.flv
+!*.mp4
+!*.mov
+!*.avi
+!*.wmv
+!*.webm
+!*.mkv
+!*.m4v
+!*.3gp
+!*.3g2
+!*.m4a
+!*.mp3
+!*.wav
+!*.flac
+!*.aac
+!*.ogg
+!*.wma
+!*.mid
+!*.midi
+!*.opus
+!*.ape
+!*.wv
+!*.tta
+!*.dsf
+!*.dff
+!*.dts
+!*.dtshd
+!*.mlp
+!*.pcm
+!*.adx
+!*.aiff
+!*.au
+!*.snd
+!*.spx
+!*.oga
+!*.weba
